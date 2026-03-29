@@ -1,290 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2a7ae2" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <title>SGPA + CGPA Calculator</title>
-  <style>
-    :root {
-      --bg-color: #f4f7fa;
-      --text-color: #333;
-      --card-color: white;
-      --accent: #2a7ae2;
-      --table-header: #2a7ae2;
-      --input-bg: #fff;
-      --input-text: #000;
-    }
-    body.dark-mode {
-      --bg-color: #121212;
-      --text-color: #eee;
-      --card-color: #1e1e1e;
-      --accent: #4a90e2;
-      --table-header: #333;
-      --input-bg: #2e2e2e;
-      --input-text: #fff;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
-      padding: 30px;
-      margin: 0;
-      transition: background 0.3s, color 0.3s;
-    }
-    h1, h3 {
-      text-align: center;
-      color: var(--accent);
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .username-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .username-bar input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: var(--input-bg);
-      color: var(--input-text);
-    }
-    .toggle-btn {
-      display: block;
-      margin: 0 auto 20px;
-      background: #444;
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .guide {
-      margin: 20px 0;
-      background: var(--card-color);
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .guide summary {
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .calculator {
-      background: var(--card-color);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-    }
-    .row, .semester {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    input, select {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      background: var(--input-bg);
-      color: var(--input-text);
-      flex: 1;
-    }
-    input.subject-name { flex: 2; }
-    input.credit, input.sgpa, input.total-credit { flex: 1; }
-    select.grade { flex: 1; }
-    button {
-      padding: 10px 16px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: none;
-      background: var(--accent);
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover { filter: brightness(0.9); }
-    .delete-btn {
-      background: #e74c3c;
-    }
-    .delete-btn:hover {
-      background: #c0392b;
-    }
-    #sgpaResult, #cgpaResult {
-      background: var(--card-color);
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    @media (max-width: 768px) {
-      .row, .semester {
-        display: block;
-      }
-      .row > *, .semester > *, button {
-        width: 100% !important;
-        margin-bottom: 10px;
-      }
-      .toggle-btn {
-        width: 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="username-bar">
-      <label for="username">Username:</label>
-      <input type="text" id="username" placeholder="Your name here" />
+
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="theme-color" content="#2a7ae2" />
+      <link rel="manifest" href="manifest.json" />
+      <link rel="icon" href="favicon.ico" type="image/x-icon" />
+      <link rel="stylesheet" href="style.css" />
+      <title>SGPA + CGPA Calculator</title>
+   </head>
+
+   <body>
+    <div class="onboarding" id="onboarding">
+  <div class="onboard-box">
+    <div class="onboard-step active">
+      <h3>🧮 Add Subjects</h3>
+      <p>Enter subject name, credits and grade</p>
     </div>
 
-    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Theme</button>
-
-    <h1>🎓 SGPA + CGPA Calculator</h1>
-
-    <details class="guide">
-      <summary>❓ How does this work?</summary>
-      <p>🧮 To calculate SGPA, enter subject name, credits, and grade, then click “Calculate SGPA”.</p>
-      <p>📘 For CGPA, after calculating each semester’s SGPA, enter it with the credits and click “Calculate CGPA.”</p>
-      <p>🌗 Use the theme toggle for light/dark mode.</p>
-      <p>🗑️ Use the trash icons to remove rows.</p>
-    </details>
-
-    <div class="calculator">
-      <h3>🎯 SGPA Calculator</h3>
-      <div id="subjectInputs">
-        <div class="row">
-          <input type="text" placeholder="📘 Subject Name" class="subject-name" />
-          <input type="number" placeholder="Credit" class="credit" />
-          <select class="grade">
-            <option value="">Select Grade</option>
-            <option value="10">A+</option><option value="9">A</option>
-            <option value="8">B+</option><option value="7">B</option>
-            <option value="6">C+</option><option value="5">C</option>
-            <option value="4">D</option><option value="0">E/F/I</option>
-          </select>
-          <button class="delete-btn" onclick="removeRow(this)">🗑️</button>
-        </div>
-      </div>
-      <button onclick="addRow()">+ Add Subject</button>
-      <button onclick="calculateSGPA()">Calculate SGPA</button>
-      <div id="sgpaResult"></div>
+    <div class="onboard-step">
+      <h3>📊 Calculate SGPA</h3>
+      <p>Click the button to get your SGPA</p>
     </div>
 
-    <div class="calculator">
-      <h3>📊 CGPA Calculator</h3>
-      <div id="cgpaInputs">
-        <div class="semester">
-          <input type="number" placeholder="SGPA" class="sgpa" />
-          <input type="number" placeholder="Total Credits" class="total-credit" />
-          <button class="delete-btn" onclick="removeRow(this)">🗑️</button>
-        </div>
-      </div>
-      <button onclick="addSemester()">+ Add Semester</button>
-      <button onclick="calculateCGPA()">Calculate CGPA</button>
-      <div id="cgpaResult"></div>
+    <div class="onboard-step">
+      <h3>🎓 Calculate CGPA</h3>
+      <p>Add semesters and calculate CGPA</p>
+    </div>
+
+    <div class="onboard-step">
+      <h3>🌗 Toggle Theme</h3>
+      <p>Switch between light and dark mode</p>
+    </div>
+
+    <div class="onboard-controls">
+      <button onclick="nextStep()">Next →</button>
+      <button class="skip" onclick="closeGuide()">Skip</button>
     </div>
   </div>
+</div>
+      <h1>🎓 SGPA + CGPA Calculator</h1>
+      <div class="credit-wrap" aria-hidden="false">
+         <a class="credit" href="https://github.com/Imdilshan" target="_blank" rel="noopener noreferrer" aria-label="Open my GitHub profile in a new tab">
+            <span class="name">by</span>
+            <svg class="gh-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+               <path d="M12 .297a12 12 0 0 0-3.797 23.396c.6.11.82-.26.82-.577v-2.04c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.758-1.333-1.758-1.088-.744.083-.729.083-.729 1.205.086 1.84 1.234 1.84 1.234 1.07 1.834 2.809 1.305 3.494.998.108-.776.42-1.305.763-1.605-2.665-.304-5.466-1.333-5.466-5.93 0-1.31.468-2.381 1.235-3.221-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 0 1 6.003 0c2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.243 2.873.12 3.176.77.84 1.233 1.911 1.233 3.221 0 4.61-2.804 5.624-5.476 5.92.43.37.815 1.1.815 2.22v3.293c0 .32.217.694.825.576A12 12 0 0 0 12 .297"></path>
+            </svg>
+            <span class="name">Md Dilshan</span>
+         </a>
+      </div>
+      <br>
+      <div class="container">
+         <div class="username-bar">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Dilshan" />
+         </div>
+         <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Theme</button>
+         <details class="guide">
+            <summary>📘 How it works</summary>
 
-  <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
-    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+            <div class="guide-grid">
+                <div class="guide-item">
+                <span>📚</span>
+                <p>Add subjects → credits → grades</p>
+                </div>
 
-    function addRow() {
-      const row = document.createElement('div');
-      row.className = 'row';
-      row.innerHTML = `
-        <input type="text" placeholder="📘 Subject Name" class="subject-name" />
-        <input type="number" placeholder="Credit" class="credit" />
-        <select class="grade">
-          <option value="">Select Grade</option>
-          <option value="10">A+</option><option value="9">A</option>
-          <option value="8">B+</option><option value="7">B</option>
-          <option value="6">C+</option><option value="5">C</option>
-          <option value="4">D</option><option value="0">E/F/I</option>
-        </select>
-        <button class="delete-btn" onclick="removeRow(this)">🗑️</button>`;
-      document.getElementById('subjectInputs').appendChild(row);
-    }
+                <div class="guide-item">
+                <span>📈 </span>
+                <p>Click <b>Calculate SGPA</b></p>
+                </div>
 
-    function addSemester() {
-      const sem = document.createElement('div');
-      sem.className = 'semester';
-      sem.innerHTML = `
-        <input type="number" placeholder="SGPA" class="sgpa" step="0.01" />
-        <input type="number" placeholder="Total Credits" class="total-credit" />
-        <button class="delete-btn" onclick="removeRow(this)">🗑️</button>`;
-      document.getElementById('cgpaInputs').appendChild(sem);
-    }
+                <div class="guide-item">
+                <span>🎓</span>
+                <p>Add semesters → calculate CGPA</p>
+                </div>
 
-    function removeRow(btn) {
-      btn.parentElement.remove();
-    }
-
-    function calculateSGPA() {
-      const grades = document.querySelectorAll('.grade');
-      const credits = document.querySelectorAll('.credit');
-      let totalPoints = 0, totalCredits = 0;
-      grades.forEach((g, i) => {
-        const gp = parseFloat(g.value);
-        const cr = parseFloat(credits[i].value);
-        if (!isNaN(gp) && !isNaN(cr)) {
-          totalPoints += gp * cr;
-          totalCredits += cr;
-        }
-      });
-      const display = document.getElementById('sgpaResult');
-      const username = document.getElementById('username').value.trim();
-      if (totalCredits === 0) {
-        display.innerHTML = `<p>Please enter valid subject data.</p>`;
-      } else {
-        const sgpa = (totalPoints / totalCredits).toFixed(2);
-        display.innerHTML = `<h3>${username ? "Hello, " + username + "! " : ""}🎯 Your SGPA: ${sgpa}</h3>`;
-      }
-    }
-
-    function calculateCGPA() {
-      const sgpas = document.querySelectorAll('.sgpa');
-      const credits = document.querySelectorAll('.total-credit');
-      let tP = 0, tC = 0;
-      sgpas.forEach((s, i) => {
-        const sg = parseFloat(s.value);
-        const cr = parseFloat(credits[i].value);
-        if (!isNaN(sg) && !isNaN(cr)) {
-          tP += sg * cr;
-          tC += cr;
-        }
-      });
-      const display = document.getElementById('cgpaResult');
-      const username = document.getElementById('username').value.trim();
-      if (tC === 0) {
-        display.innerHTML = `<p>Please enter valid semester data.</p>`;
-      } else {
-        const cgpa = (tP / tC).toFixed(2);
-        display.innerHTML = `<h3>${username ? "Hello, " + username + "! " : ""}📊 Your CGPA: ${cgpa}</h3>`;
-      }
-    }
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW registered', reg))
-          .catch(err => console.error('SW failed', err));
-      });
-    }
-  </script>
-</body>
+                <div class="guide-item">
+                <span>🌗</span>
+                <p>Toggle light / dark mode</p>
+                </div>
+            </div>
+        </details>
+         <div class="calculator">
+            <h3>📊 SGPA Calculator</h3>
+            <div id="subjectInputs">
+               <div class="row">
+                  <input type="text" placeholder="📘 Subject Name" class="subject-name" />
+                  <input type="number" placeholder="Credit" class="credit" min="0" max="100" />
+                  <select class="grade">
+                     <option value="">Select Grade</option>
+                     <option value="10">A+</option>
+                     <option value="9">A</option>
+                     <option value="8">B+</option>
+                     <option value="7">B</option>
+                     <option value="6">C+</option>
+                     <option value="5">C</option>
+                     <option value="4">D</option>
+                     <option value="0">E</option>
+                     <option value="0">F</option>
+                     <option value="0">I</option>
+                  </select>
+                  <button class="delete-btn" onclick="removeRow(this)">🗑️</button>
+               </div>
+            </div>
+            <button onclick="addRow()">+ Add Subject</button>
+            <button onclick="calculateSGPA()">Calculate SGPA</button>
+            <div id="sgpaResult"></div>
+         </div>
+         <div class="calculator">
+            <h3>🎓 CGPA Calculator</h3>
+            <div id="cgpaInputs">
+               <div class="semester">
+                    <input type="number" placeholder="Total Credits" class="total-credit" min="0" />
+                  <input type="number" placeholder="SGPA" class="sgpa" />
+                  
+                  <button class="delete-btn" onclick="removeRow(this)">🗑️</button>
+               </div>
+            </div>
+            <button onclick="addSemester()">+ Add Semester</button>
+            <button onclick="calculateCGPA()">Calculate CGPA</button>
+            <div id="cgpaResult"></div>
+         </div>
+      </div>
+      <script src="script.js"></script>
+   </body>
 </html>
